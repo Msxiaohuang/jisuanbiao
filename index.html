@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>中秋专属活动 </title>
+    <title>中秋专属回馈</title>
     <style>
         /* ===== 全局重置 ===== */
         * {
@@ -20,7 +20,6 @@
             align-items: center;
             padding: 20px;
             margin: 0;
-            /* 喜庆中秋 · 深空渐变 */
             background: radial-gradient(ellipse at 20% 30%, #2d1a1a 0%, #0f0c1a 70%, #050308 100%);
             position: relative;
             overflow-x: hidden;
@@ -40,13 +39,8 @@
             animation: float 6s ease-in-out infinite;
         }
         @keyframes float {
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-            50% {
-                transform: translateY(-16px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-16px); }
         }
 
         /* ===== 星星 ===== */
@@ -66,19 +60,12 @@
             animation: twinkle 2s infinite alternate;
         }
         @keyframes twinkle {
-            0% {
-                opacity: 0.2;
-                transform: scale(0.8);
-            }
-            100% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
+            0% { opacity: 0.2; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1.2); }
         }
 
-        /* ===== 灯笼（装饰） ===== */
-        .lantern-left,
-        .lantern-right {
+        /* ===== 灯笼 ===== */
+        .lantern-left, .lantern-right {
             position: absolute;
             font-size: 48px;
             z-index: 0;
@@ -97,13 +84,8 @@
             font-size: 36px;
         }
         @keyframes swing {
-            0%,
-            100% {
-                transform: rotate(-8deg);
-            }
-            50% {
-                transform: rotate(8deg);
-            }
+            0%, 100% { transform: rotate(-8deg); }
+            50% { transform: rotate(8deg); }
         }
 
         /* ===== 主卡片 ===== */
@@ -238,24 +220,112 @@
 
         /* ===== 结果区域 ===== */
         .result {
+            position: relative;
             margin-top: 28px;
             padding: 20px 20px 24px;
-            background: radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.08), rgba(20, 12, 12, 0.4));
+            background: radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.06), rgba(20, 12, 12, 0.3));
             border-radius: 20px;
-            border: 1px solid rgba(245, 197, 66, 0.12);
-            position: relative;
+            border: 1px solid rgba(245, 197, 66, 0.08);
             overflow: hidden;
             transition: border-color 0.4s, background 0.4s;
+            min-height: 130px;
         }
-        .result::before {
-            content: '🥮';
+
+        /* ===== 三层容器（绝对定位叠加） ===== */
+        .result-layer {
             position: absolute;
-            bottom: -10px;
-            right: 10px;
-            font-size: 60px;
-            opacity: 0.06;
-            transform: rotate(-10deg);
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 20px;
+            padding: 20px;
+            transition: opacity 0.45s ease, transform 0.45s ease;
+            opacity: 0;
+            transform: scale(0.96);
             pointer-events: none;
+        }
+        .result-layer.active {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        /* ===== 等待层 ===== */
+        #resultWaiting {
+            background: rgba(20, 12, 12, 0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+        .waiting-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+            opacity: 0.6;
+        }
+        .waiting-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #c0a88a;
+            letter-spacing: 4px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+        .waiting-sub {
+            font-size: 12px;
+            color: #887a6a;
+            letter-spacing: 2px;
+            margin-top: 4px;
+            font-weight: 400;
+        }
+
+        /* ===== 覆盖层（核算中） ===== */
+        #resultOverlay {
+            background: rgba(20, 12, 12, 0.88);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .overlay-icon {
+            font-size: 36px;
+            animation: float-icon 3s ease-in-out infinite;
+        }
+        @keyframes float-icon {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-8px) scale(1.05); }
+        }
+        .overlay-text {
+            font-size: 18px;
+            font-weight: 700;
+            color: #f5c542;
+            letter-spacing: 6px;
+            text-shadow: 0 0 20px rgba(245, 197, 66, 0.15);
+            margin-top: 8px;
+        }
+        .overlay-dots {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .overlay-dots span {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            background: #f5c542;
+            border-radius: 50%;
+            animation: dot-bounce 1.4s ease-in-out infinite both;
+        }
+        .overlay-dots span:nth-child(1) { animation-delay: 0s; }
+        .overlay-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .overlay-dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes dot-bounce {
+            0%, 80%, 100% { transform: scale(0.4); opacity: 0.4; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* ===== 结果内容层 ===== */
+        #resultContent {
+            background: transparent;
+            justify-content: flex-start;
+            padding-top: 16px;
         }
         .result-tip {
             font-size: 12px;
@@ -263,24 +333,20 @@
             text-align: center;
             letter-spacing: 4px;
             font-weight: 500;
-            margin-bottom: 4px;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 2px;
         }
         .result-divider {
             width: 40px;
             height: 2px;
             background: linear-gradient(90deg, transparent, rgba(245, 197, 66, 0.3), transparent);
-            margin: 6px auto 14px;
+            margin: 6px auto 12px;
             border-radius: 2px;
         }
         .total {
             display: flex;
             justify-content: center;
-            align-items: baseline;
+            align-items: center;
             gap: 10px;
-            position: relative;
-            z-index: 1;
         }
         .total .label {
             font-size: 16px;
@@ -296,9 +362,9 @@
             min-width: 80px;
             text-align: center;
             line-height: 1.1;
-            transition: color 0.3s, text-shadow 0.3s;
             font-variant-numeric: tabular-nums;
             text-shadow: 0 0 30px rgba(245, 197, 66, 0.2);
+            transition: color 0.3s, text-shadow 0.3s;
         }
         .total .number.zero {
             color: #665544;
@@ -308,16 +374,9 @@
             animation: bump 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
         @keyframes bump {
-            0% {
-                transform: scale(1);
-            }
-            40% {
-                transform: scale(1.15);
-                text-shadow: 0 0 60px rgba(245, 197, 66, 0.4);
-            }
-            100% {
-                transform: scale(1);
-            }
+            0% { transform: scale(1); }
+            40% { transform: scale(1.15); text-shadow: 0 0 60px rgba(245, 197, 66, 0.4); }
+            100% { transform: scale(1); }
         }
 
         /* ===== 底部 ===== */
@@ -350,8 +409,7 @@
                 top: 20px;
                 right: 20px;
             }
-            .lantern-left,
-            .lantern-right {
+            .lantern-left, .lantern-right {
                 font-size: 32px;
             }
             .box {
@@ -376,7 +434,15 @@
                 padding: 0 14px;
             }
             .result {
+                min-height: 110px;
                 padding: 16px 14px 18px;
+            }
+            .overlay-text, .waiting-text {
+                font-size: 16px;
+                letter-spacing: 4px;
+            }
+            .overlay-icon, .waiting-icon {
+                font-size: 28px;
             }
         }
         @media (max-width: 380px) {
@@ -387,9 +453,15 @@
             .total .label {
                 font-size: 14px;
             }
-            .lantern-left,
-            .lantern-right {
+            .lantern-left, .lantern-right {
                 display: none;
+            }
+            .result {
+                min-height: 100px;
+            }
+            .overlay-text, .waiting-text {
+                font-size: 14px;
+                letter-spacing: 3px;
             }
         }
     </style>
@@ -431,20 +503,43 @@
             </div>
         </div>
 
+        <!-- ===== 结果区域（三层叠加） ===== -->
         <div class="result" id="resultCard">
-            <div class="result-tip">✦ 系统核算 ✦</div>
-            <div class="result-divider"></div>
-            <div class="total">
-                <span class="label">专属好礼</span>
-                <span class="number zero" id="total">0</span>
+            <!-- 等待层 -->
+            <div class="result-layer active" id="resultWaiting">
+                <div class="waiting-icon">🌙</div>
+                <div class="waiting-text">等待输入信息</div>
+                <div class="waiting-sub">请完整填写星级与积分</div>
+            </div>
+
+            <!-- 覆盖层（核算中） -->
+            <div class="result-layer" id="resultOverlay">
+                <div class="overlay-icon">🌕</div>
+                <div class="overlay-text">正在系统核算</div>
+                <div class="overlay-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+
+            <!-- 结果内容层 -->
+            <div class="result-layer" id="resultContent">
+                <div class="result-tip">✦ 系统核算 ✦</div>
+                <div class="result-divider"></div>
+                <div class="total">
+                    <span class="label">专属好礼</span>
+                    <span class="number zero" id="total">0</span>
+                </div>
             </div>
         </div>
 
         <div class="footer">
-            <span class="lock">🔒</span>
-            <span>数据仅本地计算 · 不上传</span>
+            <span class="lock">✦</span>
+            <span>相知多年</span>
             <span class="dot"></span>
-            <span>中秋限定</span>
+            <span>值得托付</span>
+            <span class="lock">✦</span>
         </div>
     </div>
 
@@ -468,18 +563,67 @@
             }
         })();
 
-        // ===== 核心计算逻辑 =====
-        function calc() {
-            const starInput = document.getElementById('star');
-            const scoreInput = document.getElementById('score');
-            const totalEl = document.getElementById('total');
-            const resultCard = document.getElementById('resultCard');
+        // ===== DOM 引用 =====
+        const starInput = document.getElementById('star');
+        const scoreInput = document.getElementById('score');
+        const totalEl = document.getElementById('total');
+        const resultCard = document.getElementById('resultCard');
 
-            let starVal = Number(starInput.value);
-            let scoreVal = Number(scoreInput.value);
+        const layerWaiting = document.getElementById('resultWaiting');
+        const layerOverlay = document.getElementById('resultOverlay');
+        const layerContent = document.getElementById('resultContent');
 
-            if (isNaN(starVal) || starInput.value.trim() === '') starVal = 0;
-            if (isNaN(scoreVal) || scoreInput.value.trim() === '') scoreVal = 0;
+        let calcTimer = null;
+
+        // ===== 切换层的辅助函数 =====
+        function setActiveLayer(activeLayer) {
+            [layerWaiting, layerOverlay, layerContent].forEach(el => {
+                el.classList.remove('active');
+            });
+            if (activeLayer) {
+                activeLayer.classList.add('active');
+            }
+        }
+
+        // ===== 显示等待状态 =====
+        function showWaitingState() {
+            if (calcTimer) {
+                clearTimeout(calcTimer);
+                calcTimer = null;
+            }
+            setActiveLayer(layerWaiting);
+            resultCard.style.borderColor = 'rgba(245, 197, 66, 0.08)';
+            resultCard.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.06), rgba(20, 12, 12, 0.3))';
+        }
+
+        // ===== 显示核算中状态（仅显示覆盖层，无文字提示） =====
+        function showCalculatingState() {
+            setActiveLayer(layerOverlay);
+        }
+
+        // ===== 显示结果状态 =====
+        function showResultState() {
+            setActiveLayer(layerContent);
+        }
+
+        // ===== 执行计算（更新数据 + 显示结果） =====
+        function performCalculation() {
+            const starValRaw = starInput.value;
+            const scoreValRaw = scoreInput.value;
+
+            // 如果任一输入框为空 → 回到等待状态（兜底保护）
+            if (starValRaw.trim() === '' || scoreValRaw.trim() === '') {
+                showWaitingState();
+                totalEl.innerText = '0';
+                totalEl.className = 'number zero';
+                return;
+            }
+
+            let starVal = Number(starValRaw);
+            let scoreVal = Number(scoreValRaw);
+
+            if (isNaN(starVal) || starValRaw.trim() === '') starVal = 0;
+            if (isNaN(scoreVal) || scoreValRaw.trim() === '') scoreVal = 0;
 
             if (starVal < 0) starVal = 0;
             if (starVal > 5) starVal = 5;
@@ -490,8 +634,8 @@
             else if (starVal >= 4) c2 = 106;
             else if (starVal >= 3) c2 = 86;
             else if (starVal >= 2) c2 = 66;
-            else if (starVal >= 1) c2 = 36;
-            else c2 = 16;
+            else if (starVal >= 1) c2 = 56;
+            else c2 = 36;
 
             // C3 积分HB
             let c3 = 0;
@@ -507,38 +651,107 @@
                 total = sum >= 296 ? 296 : sum;
             }
 
-            // 更新 UI
+            // 更新数字显示
             const oldText = totalEl.innerText;
             totalEl.innerText = total;
             totalEl.className = 'number' + (total === 0 ? ' zero' : '');
 
-            if (oldText !== String(total)) {
+            if (oldText !== String(total) && total > 0) {
                 totalEl.classList.remove('bump');
                 void totalEl.offsetWidth;
                 totalEl.classList.add('bump');
             }
 
+            // 更新卡片样式
             if (total > 0) {
                 resultCard.style.borderColor = 'rgba(245, 197, 66, 0.3)';
                 resultCard.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.12), rgba(20, 12, 12, 0.4))';
             } else {
                 resultCard.style.borderColor = 'rgba(245, 197, 66, 0.08)';
-                resultCard.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.04), rgba(20, 12, 12, 0.4))';
+                resultCard.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(245, 197, 66, 0.06), rgba(20, 12, 12, 0.3))';
             }
+
+            showResultState();
         }
 
-        document.addEventListener('DOMContentLoaded', calc);
+        // ===== 用户输入触发的函数 =====
+        function calc() {
+            const starValRaw = starInput.value;
+            const scoreValRaw = scoreInput.value;
 
+            // 判断是否两个输入框都为空 → 回到等待状态
+            if (starValRaw.trim() === '' && scoreValRaw.trim() === '') {
+                showWaitingState();
+                if (totalEl.innerText !== '0') {
+                    totalEl.innerText = '0';
+                    totalEl.className = 'number zero';
+                }
+                return;
+            }
+
+            // 至少有一个输入框有内容 → 显示"正在系统核算"覆盖层
+            // 但后台倒计时只在两个都非空时才开始
+
+            // 检查是否两个输入框都有内容
+            const bothFilled = (starValRaw.trim() !== '' && scoreValRaw.trim() !== '');
+
+            // 清除之前的定时器（如果有）
+            if (calcTimer) {
+                clearTimeout(calcTimer);
+                calcTimer = null;
+            }
+
+            // 显示"正在系统核算"覆盖层（无论一个还是两个框有内容，都显示）
+            showCalculatingState();
+
+            if (bothFilled) {
+                // 两个都填了 → 后台3秒后执行计算（无任何文字提示）
+                calcTimer = setTimeout(() => {
+                    performCalculation();
+                    calcTimer = null;
+                }, 500);
+            }
+            // 只有一个填了 → 停留在覆盖层，等待用户补充另一个输入框
+        }
+
+        // ===== 页面加载完成：显示等待状态 =====
+        document.addEventListener('DOMContentLoaded', function() {
+            showWaitingState();
+            totalEl.innerText = '0';
+            totalEl.className = 'number zero';
+        });
+
+        // ===== 绑定回车键：立即计算，跳过3秒等待 =====
         document.querySelectorAll('input').forEach(inp => {
             inp.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
-                    calc();
+                    const starValRaw = starInput.value;
+                    const scoreValRaw = scoreInput.value;
+
+                    // 如果有任一为空，不执行计算，只显示覆盖层或等待状态
+                    if (starValRaw.trim() === '' || scoreValRaw.trim() === '') {
+                        if (starValRaw.trim() === '' && scoreValRaw.trim() === '') {
+                            showWaitingState();
+                        } else {
+                            showCalculatingState();
+                        }
+                        inp.blur();
+                        return;
+                    }
+
+                    // 两个都有内容 → 清除定时器，立即执行计算
+                    if (calcTimer) {
+                        clearTimeout(calcTimer);
+                        calcTimer = null;
+                    }
+                    performCalculation();
                     inp.blur();
                 }
             });
         });
 
-        document.getElementById('star').addEventListener('change', function() {
+        // ===== 星级范围修正 =====
+        starInput.addEventListener('change', function() {
             let v = Number(this.value);
             if (!isNaN(v)) {
                 if (v < 0) this.value = 0;
